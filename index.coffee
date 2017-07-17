@@ -10,7 +10,7 @@ module.exports = class GitDigest
 
   onCompile: ->
     return unless @config.optimize
-    @execute 'git rev-parse --short HEAD', @replace
+    @execute 'git rev-list --merges --all --max-count=1', @replace
 
   execute: (command, callback) ->
     exec command, (error, stdout, stderr) -> callback stdout
@@ -18,7 +18,7 @@ module.exports = class GitDigest
   replace: (digest) =>
     replace
       regex: /\?DIGEST/g
-      replacement: '?' + digest.chomp()
+      replacement: '?' + digest.chomp().substring(0,8)
       paths: [@config.paths.public]
       recursive: true
       silent: true
